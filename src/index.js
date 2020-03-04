@@ -48,9 +48,7 @@ function expressionCalculator(expr) {
       ) {
         operatorStack.push(exprArr[i]);
       } else if (exprArr[i] === ")") {
-        numberStack.push(
-          calc(numberStack.pop(), numberStack.pop(), operatorStack.pop())
-        );
+        countBrackets();
         operatorStack.pop();
       } else if (
         operators[exprArr[i]].priority >
@@ -65,12 +63,41 @@ function expressionCalculator(expr) {
       }
     }
 
+    function countBrackets() {
+      if (operatorStack[operatorStack.length - 1] === "(") {
+        return;
+      }
+
+      numberStack.push(
+        calc(numberStack.pop(), numberStack.pop(), operatorStack.pop())
+      );
+
+      countBrackets();
+    }
+
     if (exprArr[i] in operators) {
       addOperator();
     }
   }
 
-  return calc(numberStack[1], numberStack[0], operatorStack[0]);
+  console.log(numberStack);
+  console.log(operatorStack);
+
+  function countRest() {
+    if (!operatorStack.length) {
+      return;
+    }
+
+    numberStack.push(
+      calc(numberStack.pop(), numberStack.pop(), operatorStack.pop())
+    );
+
+    countRest();
+  }
+
+  countRest();
+
+  return numberStack[0];
 }
 
 module.exports = {
