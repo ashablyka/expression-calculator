@@ -7,6 +7,13 @@ function expressionCalculator(expr) {
   const regexp = /\d+|\+|\-|\*|\/|\(|\)/g;
   const exprArr = expr.match(regexp);
 
+  const leftBracketsCount = expr.match(/\(/g) ? expr.match(/\(/g).length : 0;
+  const rightBracketsCount = expr.match(/\)/g) ? expr.match(/\)/g).length : 0;
+
+  if (leftBracketsCount !== rightBracketsCount) {
+    throw new Error("ExpressionError: Brackets must be paired");
+  }
+
   const operators = {
     "+": {
       priority: 1,
@@ -29,6 +36,10 @@ function expressionCalculator(expr) {
   };
 
   function calc(b, a, op) {
+    if (op === "/" && b === 0) {
+      throw new Error("TypeError: Division by zero.");
+    }
+
     return operators[op].action(a, b);
   }
 
@@ -79,9 +90,6 @@ function expressionCalculator(expr) {
       addOperator();
     }
   }
-
-  console.log(numberStack);
-  console.log(operatorStack);
 
   function countRest() {
     if (!operatorStack.length) {
