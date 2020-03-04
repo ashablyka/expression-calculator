@@ -23,7 +23,9 @@ function expressionCalculator(expr) {
     "/": {
       priority: 2,
       action: (a, b) => a / b
-    }
+    },
+    "(": {},
+    ")": {}
   };
 
   function calc(b, a, op) {
@@ -39,8 +41,17 @@ function expressionCalculator(expr) {
     }
 
     function addOperator() {
-      if (!operatorStack.length) {
+      if (
+        !operatorStack.length ||
+        operatorStack[operatorStack.length - 1] === "(" ||
+        exprArr[i] === "("
+      ) {
         operatorStack.push(exprArr[i]);
+      } else if (exprArr[i] === ")") {
+        numberStack.push(
+          calc(numberStack.pop(), numberStack.pop(), operatorStack.pop())
+        );
+        operatorStack.pop();
       } else if (
         operators[exprArr[i]].priority >
         operators[operatorStack[operatorStack.length - 1]].priority
